@@ -48,7 +48,10 @@ module Step = struct
       let modulus = Wrap_impl.Bigint.to_bignum_bigint Constant.size in
       let size_in_bits = Constant.size_in_bits in
       let values = forbidden_shifted_values ~size_in_bits ~modulus in
-      values |> List.filter ~f:(fun x -> B.compare modulus x > 0) |> List.map ~f
+      let larger_than_mod x =
+        if B.compare modulus x > 0 then B.of_int 0 else x
+      in
+      values |> List.map ~f:larger_than_mod |> List.map ~f
 
     let (typ_unchecked : (t, Constant.t) Typ.t), check =
       let t0 =
@@ -119,7 +122,10 @@ module Wrap = struct
       let modulus = Step.Impl.Bigint.to_bignum_bigint Constant.size in
       let size_in_bits = Constant.size_in_bits in
       let values = forbidden_shifted_values ~size_in_bits ~modulus in
-      values |> List.filter ~f:(fun x -> B.compare modulus x > 0) |> List.map ~f
+      let larger_than_mod x =
+        if B.compare modulus x > 0 then B.of_int 0 else x
+      in
+      values |> List.map ~f:larger_than_mod |> List.map ~f
 
     let typ_unchecked, check =
       let t0 =
